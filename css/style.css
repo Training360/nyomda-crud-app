@@ -48,7 +48,14 @@ body {
   background: #d80;
 }
 
-.btn--save, 
-.btn--undo {
-  display: none;
+input:read-only {
+  border:none;
+}
+
+input:read-only:focus {
+  outline: none;
+}
+
+.d-none {
+  display: none
 }

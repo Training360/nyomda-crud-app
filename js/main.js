@@ -1,4 +1,3 @@
-import showDatatable from './users.js';
+import showUsers from './users.js';
 
-showDatatable();
-// showDatatableAll();
+showUsers();

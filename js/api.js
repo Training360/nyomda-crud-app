@@ -9,3 +9,13 @@ export const getAll = async (path) => {
     console.error(error.message);
   }
 };
+
+export const removeById = (path, id) => {
+  try {
+    return fetch(`${databaseServerUrl}/${path}/${id}`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
+};
