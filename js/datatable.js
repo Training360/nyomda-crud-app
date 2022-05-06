@@ -12,71 +12,6 @@ let isEditInProgress = false;
 //   isEditInProgress: false,
 // };
 
-const generateTableHeadCellsForObjectProps = () => Object.keys(dataArray[0]).map((prop) => `
-  <th class="table__th">
-    ${headTitles[prop]}
-  </th>`)
-  .join('');
-
-const generateTableHeadRow = () => `
-  <tr class="table__row">
-    ${generateTableHeadCellsForObjectProps()}
-    <th>&nbsp;</th>
-  </tr>
-`;
-
-const toggleButtonVisibility = (dataSelector) => {
-  const buttons = document.querySelectorAll(`.btn${dataSelector}`);
-  buttons.forEach((button) => {
-    button.classList.toggle('d-none');
-  });
-};
-
-const toggleInputReadonly = (dataSelector) => {
-  document.querySelectorAll(`tr${dataSelector} input`).forEach((input) => {
-    if (input.readOnly) {
-      input.removeAttribute('readonly');
-    } else {
-      input.setAttribute('readonly', 'readonly');
-    }
-  });
-};
-
-const getItemIdFromEvent = (event) => event.target.dataset[`${tableFor}id`];
-
-const getDataSelector = (event) => {
-  const itemid = getItemIdFromEvent(event);
-  return `[data-${tableFor}id="${itemid}"]`;
-};
-
-window.handleEditClick = (event) => {
-  if (!isEditInProgress) {
-    isEditInProgress = true;
-    const dataSelector = getDataSelector(event);
-    toggleButtonVisibility(dataSelector);
-    toggleInputReadonly(dataSelector);
-  }
-};
-
-window.handleDeleteClick = async (event) => {
-  const itemid = getItemIdFromEvent(event);
-  const dataSelector = getDataSelector(event);
-  const response = await removeById(tableFor, itemid);
-  if (!response.error) {
-    document
-      .querySelector(`tr${dataSelector}`)
-      .remove();
-  }
-};
-
-// window.handleUndoCLick = (event) => {
-//   const itemid = event.target.dataset[`${tableFor}id`];
-//   const dataSelector = `[data-${tableFor}id="${itemid}"]`;
-//   document.querySelectorAll(`tr${dataSelector} input`).forEach((input) => {
-//     input.value = input.getAttribute('value');
-//   });
-// };
-
 const generateButtons = (id) => `
   <button data-${tableFor}id="${id}" onclick="handleEditClick(event)" class="btn btn--edit">Szereksztés</button>
   <button data-${tableFor}id="${id}" onclick="handleDeleteClick(event)" class="btn btn--delete">Törlés</button>
@@ -101,6 +36,19 @@ const generateTableBodyRow = () => dataArray.map((data) => `
   </tr>
 `).join('');
 
+const generateTableHeadCellsForObjectProps = () => Object.keys(dataArray[0]).map((prop) => `
+  <th class="table__th">
+    ${headTitles[prop]}
+  </th>`)
+  .join('');
+
+const generateTableHeadRow = () => `
+  <tr class="table__row">
+    ${generateTableHeadCellsForObjectProps()}
+    <th>&nbsp;</th>
+  </tr>
+`;
+
 const generateTableHead = () => `     
   <thead class="table__head">
     ${generateTableHeadRow()}
@@ -120,5 +68,55 @@ const generateTable = (arayOfObjects, titles, path) => {
        ${generateTableBody()}
     </table>`;
 };
+
+const toggleButtonVisibility = (dataSelector) => {
+  const buttons = document.querySelectorAll(`.btn${dataSelector}`);
+  buttons.forEach((button) => {
+    button.classList.toggle('d-none');
+  });
+};
+
+const toggleInputReadonly = (dataSelector) => {
+  document.querySelectorAll(`tr${dataSelector} input`).forEach((input) => {
+    if (input.readOnly) {
+      input.removeAttribute('readonly');
+    } else {
+      input.setAttribute('readonly', 'readonly');
+    }
+  });
+};
+
+const getItemIdFromEvent = (event) => event.target.dataset.usersid;
+
+const getDataSelector = (event) => {
+  const itemid = getItemIdFromEvent(event);
+  return `[data-${tableFor}id="${itemid}"]`;
+};
+
+window.handleEditClick = (event) => {
+  if (!isEditInProgress) {
+    isEditInProgress = true;
+    const dataSelector = getDataSelector(event);
+    toggleButtonVisibility(dataSelector);
+    toggleInputReadonly(dataSelector);
+  }
+};
+
+window.handleDeleteClick = async (event) => {
+  const itemid = getItemIdFromEvent(event);
+  const dataSelector = getDataSelector(event);
+  const response = await removeById(tableFor, itemid);
+  if (!response.error) {
+    document.querySelector(`tr${dataSelector}`).remove();
+  }
+};
+
+// window.handleUndoCLick = (event) => {
+//   const itemid = event.target.dataset[`${tableFor}id`];
+//   const dataSelector = `[data-${tableFor}id="${itemid}"]`;
+//   document.querySelectorAll(`tr${dataSelector} input`).forEach((input) => {
+//     input.value = input.getAttribute('value');
+//   });
+// };
 
 export default generateTable;
